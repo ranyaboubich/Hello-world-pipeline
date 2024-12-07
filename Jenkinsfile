@@ -25,7 +25,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat 'npm install'
-                bat 'npm audit fix'
             }
         }
         
@@ -38,6 +37,12 @@ pipeline {
         stage('Test') {
             steps {
                 bat 'npm run test'
+            }
+        }
+
+        stage('Scan') {
+            steps {
+                bat 'npm audit'
             }
         }
         
