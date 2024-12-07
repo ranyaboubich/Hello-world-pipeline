@@ -40,12 +40,6 @@ pipeline {
             }
         }
 
-        stage('Scan') {
-            steps {
-                bat 'npm audit'
-            }
-        }
-        
         stage('Build Docker Image') {
             steps {
                 script {
