@@ -31,7 +31,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "example" {
   node_count            = 1
 }
 
-output "kube_config" {
+output "kubeconfig" {
   value = azurerm_kubernetes_cluster.example.kube_config_raw
   sensitive = true
 }
