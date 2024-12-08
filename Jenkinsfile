@@ -7,6 +7,10 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        ARM_CLIENT_ID = credentials('azure-client-id')
+        ARM_CLIENT_SECRET = credentials('azure-client-secret')
+        ARM_SUBSCRIPTION_ID = credentials('azure-subscription-id')
+        ARM_TENANT_ID = credentials('azure-tenant-id')
     }
 
     stages {
@@ -59,11 +63,38 @@ pipeline {
                 }
             }
         }
+
+        stage('Terraform') {
+            steps {
+                script {
+                    echo 'Terraform ...'
+                    bat 'terraform init'
+                    bat 'terraform plan'
+                    bat 'terraform apply -auto-approve'
+                    echo 'Terraform done'
+                }
+            }
+        }
+
+        stage('configure kubeconfig'){
+            steps {
+                script {
+                    def kubeconfig = sh(returnStdout: true, script: 'terraform output -raw kubeconfig')
+                       writeFile file: 'kubeconfig.yaml', text: kubeconfig
+                    sh 'export KUBECONFIG=$WORKSPACE/kubeconfig.yaml'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    echo 'Deploying the application ...'
+                    bat 'kubectl apply -f deployment.yaml'
+                }
+            }
+        }
+        
     }
 
-    post {
-        success {
-            build job: 'CD-Pipeline'
-        }
-    }
 }
