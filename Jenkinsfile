@@ -60,9 +60,12 @@ pipeline {
         stage('configure kubeconfig'){
             steps {
                 script {
-                    def kubeconfig = sh(returnStdout: true, script: 'terraform output -raw kubeconfig')
-                       writeFile file: 'kubeconfig.yaml', text: kubeconfig
-                    sh 'export KUBECONFIG=$WORKSPACE/kubeconfig.yaml'
+                    def kubeconfig = bat(returnStdout: true, script: 'terraform output -raw kubeconfig').trim()
+                    writeFile file: 'kubeconfig.yaml', text: kubeconfig
+
+                    bat """
+                        set KUBECONFIG=%WORKSPACE%\kubeconfig.yaml
+                    """
                 }
             }
         }
