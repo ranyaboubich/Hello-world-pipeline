@@ -80,7 +80,7 @@ pipeline {
             steps {
                 script {
                     echo 'creating the loadbalancer ...'
-                    bat 'kubectl apply -f service.yaml'
+                    bat 'kubectl apply -f service.yaml --kubeconfig kubeconfig.yaml'
                 }
             }
         }
