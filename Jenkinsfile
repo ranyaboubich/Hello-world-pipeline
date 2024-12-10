@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying the application ...'
-                    bat 'kubectl apply -f deployment.yaml --validate=false'
+                    bat 'kubectl apply -f deployment.yaml --validate=false --kubeconfig kubeconfig.yaml'
                 }
             }
         }
